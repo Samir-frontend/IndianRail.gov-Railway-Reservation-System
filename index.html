@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IndianRail Gov — Book Trains Online</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- ═══════════════════ TOP UTILITY BAR ═══════════════════ -->
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <span><i class="fa fa-phone"></i> Helpline: 139 &nbsp;|&nbsp; <i class="fa fa-clock"></i> 24×7 Support</span>
+      <span class="top-bar-right">
+        <a href="#" id="langToggleBtn" onclick="toggleLanguage(event)"><i class="fa fa-globe"></i> <span id="langLabel">हिन्दी</span></a>
+        <a href="#" onclick="openModal('signinModal',event)"><i class="fa fa-user"></i> <span class="lang-en">Sign In</span><span class="lang-hi" style="display:none">लॉग इन</span></a>
+        <a href="#" class="top-register-btn" onclick="openModal('registerModal',event)"><span class="lang-en">Register</span><span class="lang-hi" style="display:none">रजिस्टर</span></a>
+      </span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ HEADER ═══════════════════ -->
+  <header class="main-header" id="mainHeader">
+    <div class="header-inner">
+      <!-- Logo -->
+      <div class="logo-wrap">
+        <div class="logo-icon">
+          <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+            <rect width="42" height="42" rx="8" fill="#FF6B00"/>
+            <path d="M6 28 Q21 10 36 28" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle cx="21" cy="21" r="4" fill="white"/>
+            <rect x="5" y="28" width="32" height="5" rx="2.5" fill="white"/>
+            <rect x="9" y="33" width="3" height="4" rx="1" fill="white"/>
+            <rect x="30" y="33" width="3" height="4" rx="1" fill="white"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-main">IndianRail<span class="logo-gov">.gov</span></span>
+          <span class="logo-sub">Ministry of Railways, Government of India</span>
+        </div>
+      </div>
+
+      <!-- Nav -->
+      <nav class="main-nav" id="mainNav">
+        <a href="#home" class="nav-link active" onclick="showSection('home',this)"><i class="fa fa-home"></i> Home</a>
+        <a href="#booking" class="nav-link" onclick="showSection('booking',this)"><i class="fa fa-ticket-alt"></i> Book Ticket</a>
+        <a href="#pnr" class="nav-link" onclick="showSection('pnr',this)"><i class="fa fa-search"></i> PNR Status</a>
+        <a href="#trains" class="nav-link" onclick="showSection('trains',this)"><i class="fa fa-train"></i> Train Schedule</a>
+        <a href="#services" class="nav-link" onclick="showSection('services',this)"><i class="fa fa-th"></i> Services</a>
+        <a href="#contact" class="nav-link" onclick="showSection('contact',this)"><i class="fa fa-headset"></i> Contact</a>
+      </nav>
+
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════ SECTION: HOME ═══════════════════ -->
+  <section class="page-section active" id="home">
+
+    <!-- HERO — train.mp4 local file background -->
+    <div class="hero-wrap">
+      <video class="hero-video" autoplay muted loop playsinline>
+        <source src="train.mp4" type="video/mp4"/>
+      </video>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-badge"><i class="fa fa-shield-alt"></i> Government of India — Official Portal</div>
+        <h1 class="hero-title">Travel Across India<br/><span class="hero-accent">by Rail</span></h1>
+        <p class="hero-sub">Book tickets, check PNR, explore train schedules — all on one official platform trusted by millions.</p>
+        <div class="hero-cta">
+          <button class="btn-primary" onclick="showSection('booking', document.querySelector('[onclick*=booking]'))">
+            <i class="fa fa-ticket-alt"></i> Book Now
+          </button>
+          <button class="btn-outline" onclick="showSection('pnr', document.querySelector('[onclick*=pnr]'))">
+            <i class="fa fa-search"></i> Check PNR
+          </button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><span class="stat-num" data-target="13000">0</span><span class="stat-label">Trains Daily</span></div>
+          <div class="stat-div"></div>
+          <div class="stat"><span class="stat-num" data-target="8000">0</span><span class="stat-label">Stations</span></div>
+          <div class="stat-div"></div>
+          <div class="stat"><span class="stat-num" data-target="23">0</span><span class="stat-label">Mn Passengers/Day</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK SEARCH BAR -->
+    <div class="quick-search-wrap">
+      <div class="quick-search-card">
+        <div class="qs-tabs">
+          <button class="qs-tab active" onclick="setTripType('one-way',this)">One Way</button>
+          <button class="qs-tab" onclick="setTripType('round',this)">Round Trip</button>
+          <button class="qs-tab" onclick="setTripType('multi',this)">Multi-City</button>
+        </div>
+        <div class="qs-form">
+          <div class="qs-field">
+            <label><i class="fa fa-map-marker-alt"></i> From</label>
+            <input type="text" id="qsFrom" placeholder="City or Station" list="stationList" autocomplete="off"/>
+          </div>
+          <button class="swap-btn" onclick="swapStations()" title="Swap"><i class="fa fa-exchange-alt"></i></button>
+          <div class="qs-field">
+            <label><i class="fa fa-map-marker-check"></i> To</label>
+            <input type="text" id="qsTo" placeholder="City or Station" list="stationList" autocomplete="off"/>
+          </div>
+          <div class="qs-field">
+            <label><i class="fa fa-calendar-alt"></i> Date</label>
+            <input type="date" id="qsDate"/>
+          </div>
+          <div class="qs-field">
+            <label><i class="fa fa-users"></i> Class</label>
+            <select id="qsClass">
+              <option>Sleeper (SL)</option>
+              <option>3rd AC (3A)</option>
+              <option>2nd AC (2A)</option>
+              <option>1st AC (1A)</option>
+              <option>Chair Car (CC)</option>
+              <option>Executive (EC)</option>
+            </select>
+          </div>
+          <button class="qs-search-btn" onclick="doSearch()"><i class="fa fa-search"></i> Search Trains</button>
+        </div>
+        <datalist id="stationList">
+          <option value="New Delhi (NDLS)"/>
+          <option value="Mumbai Central (BCT)"/>
+          <option value="Chennai Central (MAS)"/>
+          <option value="Kolkata Howrah (HWH)"/>
+          <option value="Bengaluru City (SBC)"/>
+          <option value="Hyderabad (HYB)"/>
+          <option value="Jaipur (JP)"/>
+          <option value="Ahmedabad (ADI)"/>
+          <option value="Pune (PUNE)"/>
+          <option value="Lucknow (LKO)"/>
+          <option value="Patna (PNBE)"/>
+          <option value="Bhopal (BPL)"/>
+        </datalist>
+      </div>
+    </div>
+
+    <!-- SERVICES GRID -->
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-eyebrow">What We Offer</span>
+        <h2>Our Services</h2>
+        <p>Complete railway services at your fingertips</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card" onclick="showSection('booking', document.querySelector('[onclick*=booking]'))">
+          <div class="sc-icon orange"><i class="fa fa-ticket-alt"></i></div>
+          <h3>Ticket Booking</h3>
+          <p>Book AC, Sleeper, or General tickets instantly with secure payment.</p>
+          <span class="sc-link">Book Now <i class="fa fa-arrow-right"></i></span>
+        </div>
+        <div class="service-card" onclick="showSection('pnr', document.querySelector('[onclick*=pnr]'))">
+          <div class="sc-icon blue"><i class="fa fa-search"></i></div>
+          <h3>PNR Status</h3>
+          <p>Check your reservation status & seat confirmation in real-time.</p>
+          <span class="sc-link">Check Now <i class="fa fa-arrow-right"></i></span>
+        </div>
+        <div class="service-card" onclick="showSection('trains', document.querySelector('[onclick*=trains]'))">
+          <div class="sc-icon green"><i class="fa fa-train"></i></div>
+          <h3>Train Schedule</h3>
+          <p>Full timetable, live running status, platform details.</p>
+          <span class="sc-link">View Schedule <i class="fa fa-arrow-right"></i></span>
+        </div>
+        <div class="service-card">
+          <div class="sc-icon purple"><i class="fa fa-utensils"></i></div>
+          <h3>e-Catering</h3>
+          <p>Order food from top restaurants delivered to your seat.</p>
+          <span class="sc-link">Order Food <i class="fa fa-arrow-right"></i></span>
+        </div>
+        <div class="service-card">
+          <div class="sc-icon red"><i class="fa fa-wheelchair"></i></div>
+          <h3>Divyaang Concession</h3>
+          <p>Special quotas and discounts for differently-abled passengers.</p>
+          <span class="sc-link">Learn More <i class="fa fa-arrow-right"></i></span>
+        </div>
+        <div class="service-card">
+          <div class="sc-icon teal"><i class="fa fa-suitcase-rolling"></i></div>
+          <h3>Parcel & Cargo</h3>
+          <p>Send parcels, packages and cargo across India via railway.</p>
+          <span class="sc-link">Send Parcel <i class="fa fa-arrow-right"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTICE BOARD -->
+    <div class="section-wrap notice-section">
+      <div class="section-header">
+        <span class="section-eyebrow">Updates</span>
+        <h2>Latest Notices</h2>
+      </div>
+      <div class="notice-board">
+        <div class="notice-ticker">
+          <span class="ticker-label"><i class="fa fa-bullhorn"></i> NOTICE</span>
+          <div class="ticker-wrap"><div class="ticker-text" id="tickerText"></div></div>
+        </div>
+        <div class="notice-list">
+          <div class="notice-item urgent">
+            <span class="notice-tag urgent">Urgent</span>
+            <p>Train No. 12302 Howrah Rajdhani will run 45 mins late on 27-Jun-2026 due to track maintenance.</p>
+            <span class="notice-date">27 Jun 2026</span>
+          </div>
+          <div class="notice-item info">
+            <span class="notice-tag info">Info</span>
+            <p>Tatkal booking for festival season opens from 1st July 2026. Book early to secure your seat.</p>
+            <span class="notice-date">25 Jun 2026</span>
+          </div>
+          <div class="notice-item success">
+            <span class="notice-tag success">New</span>
+            <p>New Vande Bharat Express between Delhi–Varanasi now runs 7 days a week from July 2026.</p>
+            <span class="notice-date">22 Jun 2026</span>
+          </div>
+          <div class="notice-item info">
+            <span class="notice-tag info">Info</span>
+            <p>Senior citizen concession (40%) reinstated on all Mail/Express trains from 1st July 2026.</p>
+            <span class="notice-date">20 Jun 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════ SECTION: BOOK TICKET ═══════════════════ -->
+  <section class="page-section" id="booking">
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-eyebrow">Reservations</span>
+        <h2>Book Your Ticket</h2>
+        <p>Fast, secure, official</p>
+      </div>
+
+      <div class="booking-layout">
+        <div class="booking-form-card">
+          <div class="bf-steps">
+            <div class="bf-step active" id="step1btn">
+              <span class="step-num">1</span> Journey Details
+            </div>
+            <div class="step-arrow"><i class="fa fa-chevron-right"></i></div>
+            <div class="bf-step" id="step2btn">
+              <span class="step-num">2</span> Passenger Info
+            </div>
+            <div class="step-arrow"><i class="fa fa-chevron-right"></i></div>
+            <div class="bf-step" id="step3btn">
+              <span class="step-num">3</span> Payment
+            </div>
+          </div>
+
+          <!-- Step 1 -->
+          <div class="bf-panel active" id="step1">
+            <div class="form-row">
+              <div class="form-group">
+                <label>From Station</label>
+                <input type="text" id="bFrom" placeholder="e.g. New Delhi (NDLS)" list="stationList2"/>
+                <datalist id="stationList2">
+                  <option value="New Delhi (NDLS)"/><option value="Mumbai Central (BCT)"/>
+                  <option value="Chennai Central (MAS)"/><option value="Kolkata Howrah (HWH)"/>
+                  <option value="Bengaluru City (SBC)"/><option value="Jaipur (JP)"/>
+                  <option value="Ahmedabad (ADI)"/><option value="Lucknow (LKO)"/>
+                </datalist>
+              </div>
+              <div class="form-group">
+                <label>To Station</label>
+                <input type="text" id="bTo" placeholder="e.g. Mumbai Central (BCT)" list="stationList2"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Journey Date</label>
+                <input type="date" id="bDate"/>
+              </div>
+              <div class="form-group">
+                <label>Train Class</label>
+                <select id="bClass">
+                  <option>Sleeper (SL) — ₹350</option>
+                  <option>3rd AC (3A) — ₹850</option>
+                  <option>2nd AC (2A) — ₹1,250</option>
+                  <option>1st AC (1A) — ₹2,400</option>
+                  <option>Chair Car (CC) — ₹450</option>
+                  <option>Executive (EC) — ₹1,800</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Quota</label>
+                <select id="bQuota">
+                  <option>General</option>
+                  <option>Ladies</option>
+                  <option>Senior Citizen</option>
+                  <option>Tatkal</option>
+                  <option>Defence</option>
+                  <option>Divyaang</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>No. of Passengers</label>
+                <div class="counter-wrap">
+                  <button onclick="changeCount(-1)">−</button>
+                  <span id="passengerCount">1</span>
+                  <button onclick="changeCount(1)">+</button>
+                </div>
+              </div>
+            </div>
+            <button class="btn-primary full-width" onclick="nextStep(2)">Search Trains <i class="fa fa-arrow-right"></i></button>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="bf-panel" id="step2">
+            <div class="train-result-card">
+              <div class="trc-head">
+                <div>
+                  <div class="trc-name">12301 Howrah Rajdhani Express</div>
+                  <div class="trc-route">New Delhi → Kolkata Howrah &nbsp;|&nbsp; 1447 km</div>
+                </div>
+                <div class="trc-avail avail-green">Available — 48 Seats</div>
+              </div>
+              <div class="trc-times">
+                <div class="trc-time"><span class="t-time">16:55</span><span class="t-sta">NDLS</span></div>
+                <div class="trc-dur"><i class="fa fa-train"></i><span>17h 30m</span><div class="trc-line"></div></div>
+                <div class="trc-time"><span class="t-time">10:25</span><span class="t-sta">HWH</span></div>
+              </div>
+              <div class="trc-footer">
+                <span>Mon Tue Wed Thu Fri Sat Sun</span>
+                <span class="trc-fare">₹1,250 <small>per person</small></span>
+              </div>
+            </div>
+
+            <div class="passenger-form" id="passengerForms"></div>
+
+            <div class="form-group mt16">
+              <label>Contact Mobile</label>
+              <input type="tel" id="contactMobile" placeholder="+91 XXXXXXXXXX"/>
+            </div>
+            <div class="form-group">
+              <label>Contact Email</label>
+              <input type="email" id="contactEmail" placeholder="you@example.com"/>
+            </div>
+            <div class="form-row btn-row">
+              <button class="btn-outline" onclick="nextStep(1)"><i class="fa fa-arrow-left"></i> Back</button>
+              <button class="btn-primary" onclick="nextStep(3)">Proceed to Payment <i class="fa fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="bf-panel" id="step3">
+            <div class="fare-summary">
+              <h3>Fare Summary</h3>
+              <div class="fare-row"><span>Base Fare (1 × ₹1,250)</span><span>₹1,250.00</span></div>
+              <div class="fare-row"><span>Reservation Charge</span><span>₹50.00</span></div>
+              <div class="fare-row"><span>Superfast Charge</span><span>₹45.00</span></div>
+              <div class="fare-row"><span>GST (5%)</span><span>₹66.75</span></div>
+              <div class="fare-row total"><span>Total Amount</span><span>₹1,411.75</span></div>
+            </div>
+
+            <h3 class="pay-title">Select Payment Method</h3>
+            <div class="pay-methods">
+              <label class="pay-opt"><input type="radio" name="pay" value="upi" checked/><i class="fa fa-mobile-alt"></i> UPI / BHIM</label>
+              <label class="pay-opt"><input type="radio" name="pay" value="card"/><i class="fa fa-credit-card"></i> Debit/Credit Card</label>
+              <label class="pay-opt"><input type="radio" name="pay" value="nb"/><i class="fa fa-university"></i> Net Banking</label>
+              <label class="pay-opt"><input type="radio" name="pay" value="wallet"/><i class="fa fa-wallet"></i> Wallets</label>
+            </div>
+
+            <!-- UPI -->
+            <div class="pay-upi-wrap" id="payUpiWrap">
+              <label style="font-size:12px;font-weight:600;color:var(--text-soft);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px;">UPI ID <span class="req">*</span></label>
+              <input type="text" placeholder="Enter UPI ID (e.g. name@upi)" style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;font-family:'Inter',sans-serif;margin-bottom:10px;"/>
+              <div class="upi-apps">
+                <span class="upi-app">GPay</span>
+                <span class="upi-app">PhonePe</span>
+                <span class="upi-app">Paytm</span>
+                <span class="upi-app">BHIM</span>
+              </div>
+            </div>
+
+            <!-- Card -->
+            <div id="payCardWrap" style="display:none">
+              <div class="form-group">
+                <label>Name on Card <span class="req">*</span></label>
+                <input type="text" id="cardName" placeholder="As printed on card"/>
+              </div>
+              <div class="form-group">
+                <label>Card Number <span class="req">*</span></label>
+                <input type="text" id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" maxlength="19"
+                  oninput="this.value=this.value.replace(/[^\d]/g,'').replace(/(.{4})/g,'$1 ').trim()"/>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Expiry (MM/YY) <span class="req">*</span></label>
+                  <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5"
+                    oninput="this.value=this.value.replace(/[^\d]/g,'').replace(/(\d{2})(\d)/,'$1/$2')"/>
+                </div>
+                <div class="form-group">
+                  <label>CVV <span class="req">*</span></label>
+                  <input type="password" id="cardCvv" placeholder="•••" maxlength="4"
+                    oninput="this.value=this.value.replace(/\D/g,'')"/>
+                </div>
+              </div>
+            </div>
+
+            <!-- Net Banking -->
+            <div id="payNbWrap" style="display:none">
+              <div class="form-group">
+                <label>Select Bank <span class="req">*</span></label>
+                <select>
+                  <option value="">-- Select Your Bank --</option>
+                  <option>State Bank of India (SBI)</option>
+                  <option>HDFC Bank</option>
+                  <option>ICICI Bank</option>
+                  <option>Axis Bank</option>
+                  <option>Punjab National Bank (PNB)</option>
+                  <option>Bank of Baroda</option>
+                  <option>Kotak Mahindra Bank</option>
+                  <option>Canara Bank</option>
+                  <option>Union Bank of India</option>
+                  <option>Other Bank</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Wallet -->
+            <div id="payWalletWrap" style="display:none">
+              <div class="form-group">
+                <label>Select Wallet <span class="req">*</span></label>
+                <select id="walletSelect">
+                  <option value="">-- Select Wallet --</option>
+                  <option>Paytm Wallet</option>
+                  <option>Amazon Pay</option>
+                  <option>Mobikwik</option>
+                  <option>FreeCharge</option>
+                  <option>Ola Money</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Registered Mobile <span class="req">*</span></label>
+                <input type="tel" id="walletMobile" placeholder="10-digit mobile number" maxlength="10"
+                  oninput="this.value=this.value.replace(/\D/g,'')"/>
+              </div>
+            </div>
+
+            <div class="form-check" style="margin-top:16px;">
+              <input type="checkbox" id="agreeTerms"/>
+              <label for="agreeTerms">I agree to <a href="#">Terms & Conditions</a> and <a href="#">Refund Policy</a></label>
+            </div>
+
+            <div class="form-row btn-row">
+              <button class="btn-outline" onclick="nextStep(2)"><i class="fa fa-arrow-left"></i> Back</button>
+              <button class="btn-pay" onclick="confirmPayment()"><i class="fa fa-lock"></i> Pay ₹1,411.75 Securely</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar Info -->
+        <div class="booking-sidebar">
+          <div class="sidebar-card">
+            <h4><i class="fa fa-info-circle"></i> Booking Tips</h4>
+            <ul>
+              <li>Tatkal opens 1 day before journey at 10 AM</li>
+              <li>Carry valid Govt. ID during travel</li>
+              <li>e-Ticket is valid — no printout required</li>
+              <li>Cancel 24 hrs before to get max refund</li>
+            </ul>
+          </div>
+          <div class="sidebar-card">
+            <h4><i class="fa fa-shield-alt"></i> Secure Booking</h4>
+            <p>All transactions are secured with 256-bit SSL encryption & processed via official IRCTC payment gateway.</p>
+          </div>
+          <div class="sidebar-card helpline">
+            <h4><i class="fa fa-headset"></i> Need Help?</h4>
+            <p>Railway Helpline: <strong>139</strong></p>
+            <p>IRCTC Care: <strong>14646</strong></p>
+            <p>Available 24×7</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SECTION: PNR STATUS ═══════════════════ -->
+  <section class="page-section" id="pnr">
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-eyebrow">Live Status</span>
+        <h2>PNR Status Check</h2>
+        <p>Enter your 10-digit PNR number to check real-time reservation status</p>
+      </div>
+      <div class="pnr-layout">
+        <div class="pnr-card">
+          <div class="pnr-form">
+            <label>PNR Number</label>
+            <div class="pnr-input-wrap">
+              <input type="text" id="pnrInput" maxlength="10" placeholder="Enter 10-digit PNR" oninput="this.value=this.value.replace(/\D/g,'')"/>
+              <button class="btn-primary" onclick="checkPNR()"><i class="fa fa-search"></i> Check Status</button>
+            </div>
+            <p class="pnr-hint">Find your PNR on your ticket, booking confirmation SMS or email.</p>
+          </div>
+
+          <div class="pnr-result" id="pnrResult" style="display:none">
+            <div class="pnr-res-header">
+              <div>
+                <div class="pnr-res-num">PNR: <span id="pnrDisplayNum"></span></div>
+                <div class="pnr-res-train">12301 — Howrah Rajdhani Express</div>
+              </div>
+              <div class="pnr-status-badge" id="pnrBadge">CNF</div>
+            </div>
+            <div class="pnr-journey-info">
+              <div class="pji"><i class="fa fa-map-marker-alt"></i><span>New Delhi (NDLS)</span></div>
+              <div class="pji-arrow"><i class="fa fa-long-arrow-alt-right"></i></div>
+              <div class="pji"><i class="fa fa-map-marker-check"></i><span>Kolkata Howrah (HWH)</span></div>
+            </div>
+            <div class="pnr-details-grid">
+              <div class="pdg-item"><label>Date of Journey</label><span>28 Jun 2026</span></div>
+              <div class="pdg-item"><label>Class</label><span>2nd AC (2A)</span></div>
+              <div class="pdg-item"><label>Departure</label><span>16:55 hrs</span></div>
+              <div class="pdg-item"><label>Arrival</label><span>10:25 hrs (+1)</span></div>
+              <div class="pdg-item"><label>Chart Status</label><span class="chart-pending">Chart Not Prepared</span></div>
+              <div class="pdg-item"><label>Booking Status</label><span class="booked-ok">Confirm</span></div>
+            </div>
+            <div class="pnr-passengers">
+              <h4>Passenger Details</h4>
+              <table class="pax-table">
+                <thead><tr><th>#</th><th>Booking Status</th><th>Current Status</th><th>Coach</th><th>Berth</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td>CNF</td><td>CNF</td><td>A1</td><td>12 (Lower)</td></tr>
+                  <tr><td>2</td><td>CNF</td><td>CNF</td><td>A1</td><td>13 (Upper)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="pnr-info-panel">
+          <div class="pnr-status-guide">
+            <h4>Status Codes Guide</h4>
+            <div class="sg-item"><span class="sg-code green">CNF</span><span>Confirmed berth allotted</span></div>
+            <div class="sg-item"><span class="sg-code orange">WL</span><span>Waitlisted — not confirmed yet</span></div>
+            <div class="sg-item"><span class="sg-code blue">RAC</span><span>Reservation Against Cancellation</span></div>
+            <div class="sg-item"><span class="sg-code red">CAN</span><span>Ticket Cancelled</span></div>
+            <div class="sg-item"><span class="sg-code grey">PQWL</span><span>Pooled Quota Waitlist</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SECTION: TRAIN SCHEDULE ═══════════════════ -->
+  <section class="page-section" id="trains">
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-eyebrow">Timetable</span>
+        <h2>Train Schedule & Status</h2>
+        <p>Search full timetable and live running position</p>
+      </div>
+      <div class="schedule-search-bar">
+        <input type="text" id="trainSearch" placeholder="Train name or number (e.g. 12301 or Rajdhani)"/>
+        <button class="btn-primary" onclick="searchTrains()"><i class="fa fa-search"></i> Search</button>
+      </div>
+
+      <div class="train-table-wrap" id="trainTableWrap">
+        <table class="train-table">
+          <thead>
+            <tr>
+              <th>Train No.</th><th>Train Name</th><th>From</th><th>Departure</th><th>To</th><th>Arrival</th><th>Days</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="trainTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SECTION: SERVICES ═══════════════════ -->
+  <section class="page-section" id="services">
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-eyebrow">All Services</span>
+        <h2>Our Complete Services</h2>
+        <p>Everything Indian Railways offers — at one place</p>
+      </div>
+      <div class="services-full-grid">
+        <div class="sfg-card"><i class="fa fa-ticket-alt"></i><h4>Ticket Booking</h4><p>Regular, Tatkal, Premium Tatkal</p></div>
+        <div class="sfg-card"><i class="fa fa-search"></i><h4>PNR Status</h4><p>Live reservation updates</p></div>
+        <div class="sfg-card"><i class="fa fa-train"></i><h4>Train Tracking</h4><p>Live GPS-based train location</p></div>
+        <div class="sfg-card"><i class="fa fa-utensils"></i><h4>e-Catering</h4><p>Food delivery at your seat</p></div>
+        <div class="sfg-card"><i class="fa fa-undo-alt"></i><h4>Cancellation</h4><p>Easy online cancellation & refund</p></div>
+        <div class="sfg-card"><i class="fa fa-bed"></i><h4>Retiring Room</h4><p>Book station retiring rooms</p></div>
+        <div class="sfg-card"><i class="fa fa-suitcase"></i><h4>Luggage Booking</h4><p>Advance luggage registration</p></div>
+        <div class="sfg-card"><i class="fa fa-wheelchair"></i><h4>Divyaang Services</h4><p>Concessions & special facilities</p></div>
+        <div class="sfg-card"><i class="fa fa-child"></i><h4>Student Concession</h4><p>Special rates for students</p></div>
+        <div class="sfg-card"><i class="fa fa-user-shield"></i><h4>Senior Citizen</h4><p>40% concession on fares</p></div>
+        <div class="sfg-card"><i class="fa fa-map-marked-alt"></i><h4>Tourist Packages</h4><p>Special rail tour packages</p></div>
+        <div class="sfg-card"><i class="fa fa-file-alt"></i><h4>Monthly Pass</h4><p>Season ticket for daily commuters</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SECTION: CONTACT ═══════════════════ -->
+  <section class="page-section" id="contact">
+    <div class="section-wrap">
+      <div class="section-header">
+        <span class="section-eyebrow">Help & Support</span>
+        <h2>Contact Us</h2>
+        <p>We're here to help you 24×7</p>
+      </div>
+      <div class="contact-layout">
+        <div class="contact-info">
+          <div class="ci-card"><div class="ci-icon"><i class="fa fa-phone-alt"></i></div><div><h4>Railway Helpline</h4><p>139</p><small>24×7 | All India</small></div></div>
+          <div class="ci-card"><div class="ci-icon"><i class="fa fa-headset"></i></div><div><h4>IRCTC Care</h4><p>14646 / 0755-6610661</p><small>Mon–Sat, 8AM–10PM</small></div></div>
+          <div class="ci-card"><div class="ci-icon"><i class="fa fa-envelope"></i></div><div><h4>Email Support</h4><p>care@irctc.co.in</p><small>Response within 24 hrs</small></div></div>
+          <div class="ci-card"><div class="ci-icon"><i class="fa fa-map-marker-alt"></i></div><div><h4>Head Office</h4><p>Rail Bhavan, Raisina Road</p><small>New Delhi — 110001</small></div></div>
+        </div>
+        <div class="contact-form-card">
+          <h3>Send a Message</h3>
+          <div class="form-group"><label>Full Name</label><input type="text" placeholder="Your full name"/></div>
+          <div class="form-group"><label>Email Address</label><input type="email" placeholder="you@example.com"/></div>
+          <div class="form-group"><label>PNR / Booking Reference (optional)</label><input type="text" placeholder="10-digit PNR"/></div>
+          <div class="form-group"><label>Subject</label>
+            <select><option>Booking Issue</option><option>Refund Query</option><option>Train Delay</option><option>Catering Complaint</option><option>Other</option></select>
+          </div>
+          <div class="form-group"><label>Message</label><textarea rows="4" placeholder="Describe your issue in detail..."></textarea></div>
+          <button class="btn-primary full-width" onclick="submitContact()"><i class="fa fa-paper-plane"></i> Submit Query</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer class="main-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo"> IndianRail<span>.gov</span></div>
+        <p>Official online ticketing portal of the Ministry of Railways, Government of India. Serving millions of passengers daily since 2002.</p>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h5>Quick Links</h5>
+        <a href="#">Book Ticket</a><a href="#">Cancel Ticket</a><a href="#">PNR Status</a>
+        <a href="#">Train Schedule</a><a href="#">Fare Enquiry</a><a href="#">Chart Availability</a>
+      </div>
+      <div class="footer-links">
+        <h5>Information</h5>
+        <a href="#">About Indian Railways</a><a href="#">RTI Portal</a><a href="#">Tenders</a>
+        <a href="#">Careers</a><a href="#">Railway Budget</a><a href="#">Annual Report</a>
+      </div>
+      <div class="footer-links">
+        <h5>Policies</h5>
+        <a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Refund Policy</a>
+        <a href="#">Disclaimer</a><a href="#">Accessibility</a><a href="#">Sitemap</a>
+      </div>
+      <div class="footer-apps">
+        <h5>Download App</h5>
+        <a href="#" class="app-btn"><i class="fab fa-google-play"></i> Google Play</a>
+        <a href="#" class="app-btn"><i class="fab fa-apple"></i> App Store</a>
+        <div class="footer-badges">
+          <img src="https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg" alt="India" width="24"/> India's No.1 Travel App
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Ministry of Railways, Government of India. All rights reserved.</span>
+      <span>Content owned by <strong>Indian Railways</strong> | Best viewed in Chrome / Firefox</span>
+    </div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Scroll to Top -->
+  <button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa fa-arrow-up"></i>
+  </button>
+
+  <!-- ═══ SIGN IN MODAL ═══ -->
+  <div class="modal-overlay" id="signinModal" onclick="closeModalOverlay(event,'signinModal')">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('signinModal')"><i class="fa fa-times"></i></button>
+      <div class="modal-logo"> IndianRail<span>.gov</span></div>
+      <h2 class="modal-title lang-en">Sign In to Your Account</h2>
+      <h2 class="modal-title lang-hi" style="display:none">अपने खाते में लॉग इन करें</h2>
+      <div class="modal-form" id="signinForm">
+        <div class="form-group">
+          <label class="lang-en">Mobile / Email / User ID <span class="req">*</span></label>
+          <label class="lang-hi" style="display:none">मोबाइल / ईमेल / यूजर आईडी <span class="req">*</span></label>
+          <input type="text" id="siUser" placeholder="Enter mobile, email or user ID"/>
+        </div>
+        <div class="form-group">
+          <label class="lang-en">Password <span class="req">*</span></label>
+          <label class="lang-hi" style="display:none">पासवर्ड <span class="req">*</span></label>
+          <div class="pass-wrap">
+            <input type="password" id="siPass" placeholder="Enter your password"/>
+            <button type="button" class="pass-eye" onclick="togglePass('siPass',this)"><i class="fa fa-eye"></i></button>
+          </div>
+        </div>
+        <div class="modal-row">
+          <label class="check-label"><input type="checkbox" id="siRemember"/> <span class="lang-en">Remember me</span><span class="lang-hi" style="display:none">मुझे याद रखें</span></label>
+          <a href="#" onclick="openModal('forgotModal',event)" class="modal-link lang-en">Forgot Password?</a>
+          <a href="#" onclick="openModal('forgotModal',event)" class="modal-link lang-hi" style="display:none">पासवर्ड भूल गए?</a>
+        </div>
+        <button class="btn-modal-primary" onclick="doSignIn()">
+          <i class="fa fa-sign-in-alt"></i>
+          <span class="lang-en">Sign In</span><span class="lang-hi" style="display:none">लॉग इन करें</span>
+        </button>
+        <div class="modal-divider"><span>OR</span></div>
+        <button class="btn-modal-outline" onclick="closeModal('signinModal');openModal('registerModal',event)">
+          <span class="lang-en">New user? Create Account</span>
+          <span class="lang-hi" style="display:none">नया उपयोगकर्ता? खाता बनाएं</span>
+        </button>
+      </div>
+      <!-- Success state (hidden) -->
+      <div class="modal-success" id="signinSuccess" style="display:none">
+        <div class="success-icon">✅</div>
+        <h3 class="lang-en">Welcome Back!</h3>
+        <h3 class="lang-hi" style="display:none">स्वागत है!</h3>
+        <p id="siWelcomeName"></p>
+        <button class="btn-modal-primary" onclick="closeModal('signinModal')">
+          <span class="lang-en">Continue</span><span class="lang-hi" style="display:none">जारी रखें</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ REGISTER MODAL ═══ -->
+  <div class="modal-overlay" id="registerModal" onclick="closeModalOverlay(event,'registerModal')">
+    <div class="modal-box modal-box--wide">
+      <button class="modal-close" onclick="closeModal('registerModal')"><i class="fa fa-times"></i></button>
+      <div class="modal-logo"> IndianRail<span>.gov</span></div>
+      <h2 class="modal-title lang-en">Create New Account</h2>
+      <h2 class="modal-title lang-hi" style="display:none">नया खाता बनाएं</h2>
+      <div class="modal-form" id="registerForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="lang-en">First Name <span class="req">*</span></label>
+            <label class="lang-hi" style="display:none">पहला नाम <span class="req">*</span></label>
+            <input type="text" id="regFname" placeholder="First name"/>
+          </div>
+          <div class="form-group">
+            <label class="lang-en">Last Name <span class="req">*</span></label>
+            <label class="lang-hi" style="display:none">अंतिम नाम <span class="req">*</span></label>
+            <input type="text" id="regLname" placeholder="Last name"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="lang-en">Mobile Number <span class="req">*</span></label>
+          <label class="lang-hi" style="display:none">मोबाइल नंबर <span class="req">*</span></label>
+          <input type="tel" id="regMobile" placeholder="10-digit mobile number" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/>
+        </div>
+        <div class="form-group">
+          <label class="lang-en">Email Address <span class="req">*</span></label>
+          <label class="lang-hi" style="display:none">ईमेल पता <span class="req">*</span></label>
+          <input type="email" id="regEmail" placeholder="you@example.com"/>
+        </div>
+        <div class="form-group">
+          <label class="lang-en">Date of Birth <span class="req">*</span></label>
+          <label class="lang-hi" style="display:none">जन्म तिथि <span class="req">*</span></label>
+          <input type="date" id="regDob"/>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="lang-en">Password <span class="req">*</span></label>
+            <label class="lang-hi" style="display:none">पासवर्ड <span class="req">*</span></label>
+            <div class="pass-wrap">
+              <input type="password" id="regPass" placeholder="Min 8 characters" oninput="checkPassStrength(this.value)"/>
+              <button type="button" class="pass-eye" onclick="togglePass('regPass',this)"><i class="fa fa-eye"></i></button>
+            </div>
+            <div class="pass-strength" id="passStrength"><div class="pass-bar" id="passBar"></div></div>
+            <small id="passHint" style="color:var(--text-muted);font-size:11px;"></small>
+          </div>
+          <div class="form-group">
+            <label class="lang-en">Confirm Password <span class="req">*</span></label>
+            <label class="lang-hi" style="display:none">पासवर्ड की पुष्टि करें <span class="req">*</span></label>
+            <div class="pass-wrap">
+              <input type="password" id="regPassConf" placeholder="Re-enter password"/>
+              <button type="button" class="pass-eye" onclick="togglePass('regPassConf',this)"><i class="fa fa-eye"></i></button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="lang-en">Gender <span class="req">*</span></label>
+          <label class="lang-hi" style="display:none">लिंग <span class="req">*</span></label>
+          <select id="regGender">
+            <option value="">-- Select --</option>
+            <option>Male / पुरुष</option>
+            <option>Female / महिला</option>
+            <option>Other / अन्य</option>
+          </select>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="regTerms"/>
+          <label for="regTerms" class="lang-en">I agree to <a href="#" class="modal-link">Terms & Conditions</a> and <a href="#" class="modal-link">Privacy Policy</a></label>
+          <label for="regTerms" class="lang-hi" style="display:none">मैं <a href="#" class="modal-link">नियमों और शर्तों</a> से सहमत हूँ</label>
+        </div>
+        <button class="btn-modal-primary" onclick="doRegister()">
+          <i class="fa fa-user-plus"></i>
+          <span class="lang-en">Create Account</span><span class="lang-hi" style="display:none">खाता बनाएं</span>
+        </button>
+        <div class="modal-divider"><span class="lang-en">Already have an account?</span><span class="lang-hi" style="display:none">पहले से खाता है?</span></div>
+        <button class="btn-modal-outline" onclick="closeModal('registerModal');openModal('signinModal',event)">
+          <span class="lang-en">Sign In</span><span class="lang-hi" style="display:none">लॉग इन करें</span>
+        </button>
+      </div>
+      <div class="modal-success" id="registerSuccess" style="display:none">
+        <div class="success-icon">🎉</div>
+        <h3 class="lang-en">Account Created!</h3>
+        <h3 class="lang-hi" style="display:none">खाता बन गया!</h3>
+        <p id="regWelcomeName"></p>
+        <p style="font-size:13px;color:var(--text-soft);" class="lang-en">A confirmation link has been sent to your email.</p>
+        <p style="font-size:13px;color:var(--text-soft);" class="lang-hi" style="display:none">आपके ईमेल पर पुष्टि लिंक भेजा गया है।</p>
+        <button class="btn-modal-primary" onclick="closeModal('registerModal');openModal('signinModal',event)">
+          <span class="lang-en">Sign In Now</span><span class="lang-hi" style="display:none">अभी लॉग इन करें</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FORGOT PASSWORD MODAL ═══ -->
+  <div class="modal-overlay" id="forgotModal" onclick="closeModalOverlay(event,'forgotModal')">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('forgotModal')"><i class="fa fa-times"></i></button>
+      <div class="modal-logo">🔑</div>
+      <h2 class="modal-title lang-en">Reset Password</h2>
+      <h2 class="modal-title lang-hi" style="display:none">पासवर्ड रीसेट करें</h2>
+      <p style="color:var(--text-soft);font-size:14px;text-align:center;margin-bottom:20px;" class="lang-en">Enter your registered mobile or email and we'll send you a reset link.</p>
+      <p style="color:var(--text-soft);font-size:14px;text-align:center;margin-bottom:20px;" class="lang-hi" style="display:none">अपना पंजीकृत मोबाइल या ईमेल दर्ज करें।</p>
+      <div class="modal-form" id="forgotForm">
+        <div class="form-group">
+          <label class="lang-en">Mobile or Email <span class="req">*</span></label>
+          <label class="lang-hi" style="display:none">मोबाइल या ईमेल <span class="req">*</span></label>
+          <input type="text" id="forgotInput" placeholder="Enter mobile or email"/>
+        </div>
+        <button class="btn-modal-primary" onclick="doForgotPass()">
+          <i class="fa fa-paper-plane"></i>
+          <span class="lang-en">Send Reset Link</span><span class="lang-hi" style="display:none">रीसेट लिंक भेजें</span>
+        </button>
+        <button class="btn-modal-outline" onclick="closeModal('forgotModal');openModal('signinModal',event)" style="margin-top:10px;">
+          <span class="lang-en">Back to Sign In</span><span class="lang-hi" style="display:none">वापस लॉग इन पर</span>
+        </button>
+      </div>
+      <div class="modal-success" id="forgotSuccess" style="display:none">
+        <div class="success-icon">📧</div>
+        <h3 class="lang-en">Link Sent!</h3>
+        <h3 class="lang-hi" style="display:none">लिंक भेजा गया!</h3>
+        <p class="lang-en">Check your mobile/email for the password reset link.</p>
+        <p class="lang-hi" style="display:none">पासवर्ड रीसेट के लिए अपना मोबाइल/ईमेल जांचें।</p>
+        <button class="btn-modal-primary" onclick="closeModal('forgotModal');openModal('signinModal',event)">
+          <span class="lang-en">Back to Sign In</span><span class="lang-hi" style="display:none">वापस लॉग इन</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
