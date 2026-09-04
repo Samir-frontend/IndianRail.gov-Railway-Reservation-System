@@ -213,7 +213,7 @@ open index.html
 
 **Samir Sheikh** · Front-End Developer · 📍 Rawatbhata, Rajasthan
 
-[Portfolio](https://samir-frontend.github.io/Personal-Portfolio/) · [GitHub](https://github.com/Samir-frontend) · 📧 samirshiekh0808@gmail.com
+[Portfolio](https://samir-portfolio-mu.vercel.app/) · [GitHub](https://github.com/Samir-frontend) · 📧 samirshiekh0808@gmail.com
 
 <br/>
 
